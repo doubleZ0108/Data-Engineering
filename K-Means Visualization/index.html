@@ -12,20 +12,29 @@
     <script type="text/javascript" src="static/js/data-loader.js"></script>
     <script type="text/javascript" src="static/js/kmeans.js"></script>
     
-    <link type="text/css" rel="stylesheet" href="static/css/kmeans.css">
+    <link type="text/css" rel="stylesheet" href="static/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="static/css/kmeans.css" />
     
   </head>
   
   <body>
-    <h1>K-means algorithm in D3.js</h1>
+    <div class="title">
+      <h1>聚类及可视化大作业 | K-Means Vialization</h1>
+      <p>1754060    软件学院    张喆</p>
+    </div>
 
-    <input id="csv-loader" type="file" name="uploadCSV" />
-    <input id="clusteNum" type="number" value="3" />
-    <input id="maxIterNum" type="number" value="10" />
-    <input id="submit" type="button" value="start" />
+    <form>
+      <input id="csv-loader" type="file" name="uploadCSV" />
+      聚类K值: <input id="clusteNum" type="number" value="3" max="10" min="1" />
+      最少迭代次数: <input id="maxIterNum" type="number" value="10" max="1000" min="1" />
 
-    
-    <div id="kmeans" class="kmeans-chart"></div>
+      <div>
+        <input class="cold-light" id="clear" type="button" value="清除" />
+        <input class="cold-light" id="submit" type="button" value="开始运行聚类算法" />  
+      </div>
+    </form>
+   
+    <div class="chart-container" id="kmeans" class="kmeans-chart"></div>
     
   </body>
   
@@ -53,13 +62,25 @@
         // console.log(data_frontEnd_qps)
         // console.log(data_frontEnd_latency)
 
-        // elt, w, h, numPoints, numClusters, maxIter
         let clusteNum = document.getElementById("clusteNum").value
         let maxIterNum = document.getElementById("maxIterNum").value
-        kMeans("#kmeans", data, Math.max(...data_frontEnd_qps) + 100, Math.max(...data_frontEnd_latency) + 100, csv.length, clusteNum, maxIterNum);
+
+
+        document.getElementById("kmeans").innerHTML = "";
+
+        // d3 figure, data, width, height, numPoints, numClusters, maxIter
+        kMeans(
+          "#kmeans", 
+          data, csv.length, 
+          Math.max(...data_frontEnd_qps) + 100, Math.max(...data_frontEnd_latency) + 100,
+          parseInt(clusteNum), parseInt(maxIterNum)
+        );
       })
     });
 
+    document.getElementById("clear").addEventListener("click", function() {
+      document.getElementById("kmeans").innerHTML = "";
+    });
   </script>
  
 </html> 

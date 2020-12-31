@@ -1,0 +1,101 @@
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.chart-container {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: column;
+}
+
+form {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+form input {
+    margin: 0 25px;
+}
+form div input {
+    margin: 0 5px;
+}
+
+form input[type="file"] {
+    width: 200px;
+}
+
+form input[type="number"] {
+    width: 50px;
+    text-align: center;
+}
+
+.cold-light {
+    position: relative;
+    padding: 10px 15px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    background-color: #111;
+    color: #fff;
+    font-size: 13.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .8s cubic-bezier(.2,.8,.2,1);
+}
+.cold-light:hover {
+    z-index: 1;
+    animation: ColdLight 4s linear infinite;
+}
+
+/* first */
+.cold-light:nth-child(1):hover {
+    background: linear-gradient(90deg, #f40303, #ffc400);
+    background-size: 200%;
+}
+.cold-light:nth-child(2):hover {
+    background: linear-gradient(90deg, #034ff4, #9900ff);
+    background-size: 200%;
+}
+
+
+.cold-light:before {
+    content: '';
+    position: absolute;
+    background: inherit;
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
+    border-radius: 50px;
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.cold-light:hover:before {
+    opacity: 1;
+    z-index: -1;
+}
+
+@keyframes ColdLight {
+    0%{
+        background-position: 0%;
+    }
+    50%{
+        background-position: 100%;
+    }
+    100% {
+        background-position: 0%;
+    }
+}

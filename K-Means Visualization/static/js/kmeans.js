@@ -1,13 +1,12 @@
 ﻿"use strict";
 
-function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
-
+function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
     // the current iteration
     var iter = 1,
         centroids = [],
         points = [];
         
-    var margin = {top: 30, right: 20, bottom: 20, left: 30},
+    var margin = {top: 30, right: 35, bottom: 20, left: 30},
         width = w - margin.left - margin.right,
         height = h - margin.top - margin.bottom;
 
@@ -40,9 +39,8 @@ function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
      * Returns a point with the specified type and fill color and with random 
      * x,y-coordinates.
      */
-    let counter = -1
-    function getRandomPoint(type, fill) {
-
+    let counter = -1;
+    function getNextPoint(type, fill) {
         if(type !== "centroid") {
             counter++;
             return { 
@@ -57,16 +55,8 @@ function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
                 y: data.latency[Math.floor(Math.round(Math.random() * height))],
                 type: type,
                 fill: fill 
-            }
+            };
         }
-        return { 
-            // x: Math.round(Math.random() * width), 
-            // y: Math.round(Math.random() * height),
-            x: data.qps[counter],
-            y: data.latency[counter],
-            type: type,
-            fill: fill 
-        };
     }
 
     /** 
@@ -79,7 +69,7 @@ function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
             if (type !== "centroid") {
                 color = "#ccc";
             }
-            var point = getRandomPoint(type, color);
+            var point = getNextPoint(type, color);
             point.id = point.type + "-" + i;
             result.push(point);
         }
@@ -209,6 +199,7 @@ function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
         update();
         
         var interval = setInterval(function() {
+            console.log(iter, maxIter)
             if(iter < maxIter + 1) {
                 iterate();
                 iter++;
