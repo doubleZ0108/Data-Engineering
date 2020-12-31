@@ -1,86 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聚类及可视化大作业 | K-Means Vialization</title>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> -->
-    <script type="text/javascript" src="lib/d3.min.js"></script>
-    <script type="text/javascript" src="lib/xlsx.core.min.js"></script>
+  <script type="text/javascript" src="lib/d3.min.js"></script>
+  <script type="text/javascript" src="lib/xlsx.core.min.js"></script>
 
-    <script type="text/javascript" src="static/js/data-loader.js"></script>
-    <script type="text/javascript" src="static/js/kmeans.js"></script>
-    
-    <link type="text/css" rel="stylesheet" href="static/css/style.css" />
-    <link type="text/css" rel="stylesheet" href="static/css/kmeans.css" />
-    
-  </head>
+  <script type="text/javascript" src="static/js/main.js"></script>
+  <script type="text/javascript" src="static/js/data-loader.js"></script>
+  <script type="text/javascript" src="static/js/kmeans.js"></script>
   
-  <body>
-    <div class="title">
-      <h1>聚类及可视化大作业 | K-Means Vialization</h1>
-      <p>1754060    软件学院    张喆</p>
+  <link type="text/css" rel="stylesheet" href="static/css/style.css" />
+  <link type="text/css" rel="stylesheet" href="static/css/kmeans.css" />
+</head>
+<body>
+
+  <div class="title">
+    <h1>聚类及可视化大作业 | K-Means Vialization</h1>
+    <p>1754060    软件学院    张喆</p>
+  </div>
+
+  <form>
+    <div>
+      <input id="csv-loader" type="file" name="uploadCSV" />
+
+      聚类指标1<input type="text" value="service/front-end/qps(2xx)" disabled />
+      聚类指标2<input type="text" value="service/front-end/latency" disabled />
+
+      聚类K值: <input id="clusteNum" type="number" value="3" max="10" min="1" />
+      迭代次数: <input id="maxIterNum" type="number" value="10" max="1000" min="1" />
     </div>
 
-    <form>
-      <input id="csv-loader" type="file" name="uploadCSV" />
-      聚类K值: <input id="clusteNum" type="number" value="3" max="10" min="1" />
-      最少迭代次数: <input id="maxIterNum" type="number" value="10" max="1000" min="1" />
-
-      <div>
-        <input class="cold-light" id="clear" type="button" value="清除" />
-        <input class="cold-light" id="submit" type="button" value="开始运行聚类算法" />  
-      </div>
-    </form>
-   
-    <div class="chart-container" id="kmeans" class="kmeans-chart"></div>
-    
-  </body>
-  
-  <script type="text/javascript">
-    // kMeans("#kmeans", 500, 500, 1000, 5, 10);
-    
-    document.getElementById("submit").addEventListener("click", function() {
-      let file = document.getElementById("csv-loader").files[0];
-      // console.log(file)
-      readWorkbookFromLocalFile(file, function(workbook) {
-        // console.log(workbook)
-        let sheetNames = workbook.SheetNames;
-        let sheet = workbook.Sheets[sheetNames[0]];
-        let csv = XLSX.utils.sheet_to_json(sheet);
-        let data_frontEnd_qps = [], data_frontEnd_latency = []
-        csv.forEach(function(row) {
-          data_frontEnd_qps.push(row["service/front-end/qps(2xx)"]*5)
-          data_frontEnd_latency.push(row["service/front-end/latency"]*5)
-        })
-
-        let data = {
-          qps: data_frontEnd_qps,
-          latency: data_frontEnd_latency
-        }
-        // console.log(data_frontEnd_qps)
-        // console.log(data_frontEnd_latency)
-
-        let clusteNum = document.getElementById("clusteNum").value
-        let maxIterNum = document.getElementById("maxIterNum").value
-
-
-        document.getElementById("kmeans").innerHTML = "";
-
-        // d3 figure, data, width, height, numPoints, numClusters, maxIter
-        kMeans(
-          "#kmeans", 
-          data, csv.length, 
-          Math.max(...data_frontEnd_qps) + 100, Math.max(...data_frontEnd_latency) + 100,
-          parseInt(clusteNum), parseInt(maxIterNum)
-        );
-      })
-    });
-
-    document.getElementById("clear").addEventListener("click", function() {
-      document.getElementById("kmeans").innerHTML = "";
-    });
-  </script>
+    <div>
+      <input class="cold-light" id="clear" type="button" value="清除" />
+      <input class="cold-light" id="submit" type="button" value="开始运行聚类算法" />  
+    </div>
+  </form>
  
-</html> 
+  <div class="chart-container" id="kmeans" class="kmeans-chart"></div> 
+  
+</body>
+</html>

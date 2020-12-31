@@ -1,3 +1,7 @@
+body {
+    min-height: 100vh;
+}
+
 .title {
     display: flex;
     align-items: center;
@@ -15,24 +19,31 @@
 }
 
 form {
-    width: 80%;
+    width: 90%;
     margin: 20px auto;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+form > div {
+    margin: 10px auto;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-form input {
-    margin: 0 25px;
+form > div:nth-child(1) input {
+    margin: 0 25px 0 5px;
 }
-form div input {
+form > div:nth-child(2) input {
     margin: 0 5px;
 }
 
 form input[type="file"] {
-    width: 200px;
+    width: 175px;
 }
 
 form input[type="number"] {

@@ -1,4 +1,8 @@
-// 读取本地excel文件
+/**
+ * 读取本地Excel文件
+ * @param {用户上传Blob文件} file 
+ * @param {读取成功回调} callback 
+ */
 function readWorkbookFromLocalFile(file, callback) {
 	var reader = new FileReader();
 	reader.onload = function(e) {

@@ -1,10 +1,9 @@
 ﻿"use strict";
 
 function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
-    // the current iteration
-    var iter = 1,
-        centroids = [],
-        points = [];
+    var iter = 1,           // 当前迭代轮次
+        centroids = [],     // 中心点集合
+        points = [];        // 待聚类点集合
         
     var margin = {top: 30, right: 35, bottom: 20, left: 30},
         width = w - margin.left - margin.right,
@@ -27,7 +26,9 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
         .text("");
 
     /**
-     * Computes the euclidian distance between two points.
+     * 欧拉坐标
+     * @param {点1} a 
+     * @param {点2} b 
      */
     function getEuclidianDistance(a, b) {
         var dx = b.x - a.x,
@@ -35,11 +36,13 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
     
+    
+    let counter = -1;       // 获取数据点计数器
     /**
-     * Returns a point with the specified type and fill color and with random 
-     * x,y-coordinates.
+     * 获取数据集中下个点坐标
+     * @param {该点的类型} type 
+     * @param {该点的填充颜色} fill 
      */
-    let counter = -1;
     function getNextPoint(type, fill) {
         if(type !== "centroid") {
             counter++;
@@ -49,7 +52,7 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
                 type: type,
                 fill: fill 
             };
-        } else {
+        } else {        // 初始中心点为数据集中的随机点
             return {
                 x: data.qps[Math.floor(Math.round(Math.random() * width))],
                 y: data.latency[Math.floor(Math.round(Math.random() * height))],
@@ -59,8 +62,10 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
         }
     }
 
-    /** 
-     * Generates a specified number of random points of the specified type.
+    /**
+     * 根据数据集初始化坐标点
+     * @param {数据集中点的总数}} num 
+     * @param {初始化时点的类型} type 
      */
     function initializePoints(num, type) {
         var result = [];
@@ -77,13 +82,14 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
     }
 
     /**
-     * Find the centroid that is closest to the specified point.
+     * 寻找距目标点最近的中心点
+     * @param {目标点} point 
      */
     function findClosestCentroid(point) {
         var closest = {i: -1, distance: width * 2};
         centroids.forEach(function(d, i) {
             var distance = getEuclidianDistance(d, point);
-            // Only update when the centroid is closer
+            // 如果距离某个中心点更近则更新
             if (distance < closest.distance) {
                 closest.i = i;
                 closest.distance = distance;
@@ -93,7 +99,7 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
     }
     
     /**
-     * All points assume the color of the closest centroid.
+     * 根据中心点颜色填充数据点颜色
      */
     function colorizePoints() {
         points.forEach(function(d) {
@@ -103,8 +109,8 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
     }
 
     /**
-     * Computes the center of the cluster by taking the mean of the x and y 
-     * coordinates.
+     * 更新中心点坐标 - 计算平均值
+     * @param {聚类集群} cluster 
      */
     function computeClusterCenter(cluster) {
         return [
@@ -114,92 +120,83 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
     }
     
     /**
-     * Moves the centroids to the center of their cluster.
+     * 在集群中移动中心点
      */
     function moveCentroids() {
         centroids.forEach(function(d) {
-            // Get clusters based on their fill color
+            // 根据颜色提取集群中的点
             var cluster = points.filter(function(e) {
                 return e.fill === d.fill;
             });
-            // Compute the cluster centers
+            // 重新计算中心点
             var center = computeClusterCenter(cluster);
-            // Move the centroid
+            // 移动坐标
             d.x = center[0];
             d.y = center[1];
         });
     }
 
     /**
-     * Updates the chart.
+     * 更新图像
      */
     function update() {
-    
         var data = points.concat(centroids);
-        
-        // The data join
+
         var circle = group.selectAll("circle")
             .data(data);
             
-        // Create new elements as needed
+        // 创建新的点
         circle.enter().append("circle")
             .attr("id", function(d) { return d.id; })
             .attr("class", function(d) { return d.type; })
             .attr("r", 5);
             
-        // Update old elements as needed
+        // 更新旧的点
         circle.transition().delay(100).duration(1000)
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
             .style("fill", function(d) { return d.fill; });
         
-        // Remove old nodes
+        // 删除旧点
         circle.exit().remove();
     }
 
     /**
-     * Updates the text in the label.
+     * 更新底部文字信息
+     * @param {文字内容} text 
      */
     function setText(text) {
         svg.selectAll(".label").text(text);
     }
     
     /**
-     * Executes one iteration of the algorithm:
-     * - Fill the points with the color of the closest centroid (this makes it 
-     *   part of its cluster)
-     * - Move the centroids to the center of their cluster.
+     * 执行算法的一轮迭代
+     *  - 用距离最近中心的颜色填充改点颜色
+     *  - 更新中心为集合的平均值
      */
     function iterate() {
-        
-        // Update label
         setText("Iteration " + iter + " of " + maxIter);
 
-        // Colorize the points
         colorizePoints();
         
-        // Move the centroids
         moveCentroids();
         
-        // Update the chart
         update();
     }
 
     /** 
-     * The main function initializes the algorithm and calls an iteration every 
-     * two seconds.
+     * 初始化迭代算法 并 启动定时器
      */
     function initialize() {
         
-        // Initialize random points and centroids
+        // 初始化数据集和中心点
         centroids = initializePoints(numClusters, "centroid");
         points = initializePoints(numPoints, "point");
         
-        // initial drawing
+        // 创建初始图像
         update();
         
         var interval = setInterval(function() {
-            console.log(iter, maxIter)
             if(iter < maxIter + 1) {
                 iterate();
                 iter++;
@@ -210,6 +207,6 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
         }, 2 * 1000);
     }
 
-    // Call the main function
+    // 调用主函数
     initialize();
 }
