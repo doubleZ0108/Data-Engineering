@@ -1,12 +1,4 @@
-﻿/**
- * kmeans.js
- * Visualizes the k-Means clustering algorithm. 
- *
- *
- * @author: Hugo Janssen
- * @date:   6/22/2015
- */
-"use strict";
+﻿"use strict";
 
 function kMeans(elt, data, w, h, numPoints, numClusters, maxIter) {
 
