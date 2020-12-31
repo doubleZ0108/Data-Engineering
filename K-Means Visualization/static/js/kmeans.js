@@ -204,7 +204,7 @@ function kMeans(elt, data, numPoints, w, h, numClusters, maxIter) {
                 clearInterval(interval);
                 setText("Done");
             }
-        }, 2 * 1000);
+        }, 2000);
     }
 
     // 调用主函数
